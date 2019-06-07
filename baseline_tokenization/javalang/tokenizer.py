@@ -39,7 +39,7 @@ class Keyword(JavaToken):
                   'new', 'package', 'private', 'protected', 'public', 'return',
                   'short', 'static', 'strictfp', 'super', 'switch',
                   'synchronized', 'this', 'throw', 'throws', 'transient', 'try',
-                  'void', 'volatile', 'while'])
+                  'void', 'volatile', 'while', "XXXNEWLINE"])
 
 
 class Modifier(Keyword):
@@ -91,7 +91,7 @@ class Null(Literal):
     pass
 
 class Separator(JavaToken):
-    VALUES = set(['(', ')', '{', '}', '[', ']', ';', ',', '.'])
+    VALUES = set(['(', ')', '{', '}', '[', ']', ';', ',', '.', '\u2023'])
 
 class Operator(JavaToken):
     MAX_LEN = 4
@@ -578,7 +578,8 @@ class JavaTokenizer(object):
             char = self.data[self.j]
 
         message = u'%s at "%s", line %s: %s' % (message, char, line_number, line)
-
+    
+        print (message)
         raise LexerError(message)
 
 def tokenize(code):
