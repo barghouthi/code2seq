@@ -5,6 +5,8 @@ import sys
 import re
 import remove_comments
 import argparse
+import os
+from pathlib import Path
 
 
 modifiers = ['public', 'private', 'protected', 'static']
@@ -20,13 +22,14 @@ RE_WORDS = re.compile(r'''
 
 def clean_code(f):
     pat1 = re.compile('\/\*(.*?)\*\/',re.M|re.DOTALL)
-    pat2 = re.compile('\/\/(.*)')
+    pat2 = re.compile('[^:\/]\/\/(.*)')
     
     pat3 = re.compile('\n')
     data = open(f, 'r', encoding='utf-8').read()
     # replace comments with empty space (pat1,pat2)
     # replace newline with special unicode character; this is because the tokenizer is weird, and we could only hijack it with single characters -- turns out most keyboard characters can appear in programs.
-    return (pat3.sub(' \u2023 ', pat2.sub("",pat1.sub("",data))))
+    return (pat3.sub(' \u2023 ', data))
+    #return (pat3.sub(' \u2023 ', pat2.sub("",pat1.sub("",data))))
 
 
 def split_subtokens(str):
@@ -48,10 +51,11 @@ def tokenizeFile(file_path):
         print('ERROR in tokenizing: ' + method_content)
         #tokens = method_content.split(' ')
       #if len(tokens) > 0:
-      method_contents_file.write(' '.join([' '.join(split_subtokens(i.value)) for i in tokens]) + '\n')
+      #for t in tokens: print(type(t)); print (t.getValue())
+      method_contents_file.write(' '.join([' '.join(split_subtokens(i.getValue())) for i in tokens]) + '\n')
       #else:
       #  print('ERROR in len of: ' + method_name + ', tokens: ' + str(tokens))
-  print(str(lines))
+  #print(str(lines))
 
 
 if __name__ == '__main__':
@@ -67,5 +71,22 @@ if __name__ == '__main__':
 
     file = str(args.file)
     tokenizeFile(file)
+  
+  if args.directory is not None:
+    success = 0
+    fail = 0
+    print ("Tokenizing entire directory ", args.directory)
+    pathlist = Path(str(args.directory)).glob('**/*.java')
+    for path in pathlist:
+      # because path is object not string
+      try:
+        path_in_str = str(path)
+        print("\tTokenizing ", path_in_str)
+        tokenizeFile(path_in_str)
+        success = success+1
+      except:
+        fail = fail+1
+      
+    print (success, " out of ",success+fail, " succeeded")
 
 

@@ -1,9 +1,1 @@
-/* aws
-wrote 
-this code
-*/
-
-@Override
-public static void main(){
-    print("aws") //aws
-}
+/* aws */ x|y public static final String fourByte = "  // parameter val is of type java.lang.Double\n"; //wow wow

@@ -27,6 +27,9 @@ class JavaToken(object):
     def __eq__(self, other):
         raise Exception("Direct comparison not allowed")
 
+    def getValue(self):
+        return self.value
+
 class EndOfInput(JavaToken):
     pass
 
@@ -479,7 +482,9 @@ class JavaTokenizer(object):
                     except ValueError:
                         self.error('Invalid unicode escape', data[j:j+4])
 
-                    new_data.append(six.unichr(escape_code))
+                    #new_data.append(six.unichr(escape_code))
+                    # HANDLE UNICODE: this is to avoid surrogate issues as we print one token at a time
+                    new_data.append("UNI"+str(escape_code))
 
                     i = j + 4
                     j = i
